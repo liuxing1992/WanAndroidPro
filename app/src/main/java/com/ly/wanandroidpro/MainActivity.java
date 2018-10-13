@@ -8,11 +8,12 @@ import android.widget.TextView;
 
 import com.jess.arms.base.BaseActivity;
 import com.jess.arms.di.component.AppComponent;
+import com.ly.wanandroidpro.base.MySupportActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends MySupportActivity {
     @BindView(R.id.text)
     TextView text;
 
@@ -21,6 +22,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_main);
         text.setText("woshi");
+//        showNetWorkError();
     }
 
     @Override

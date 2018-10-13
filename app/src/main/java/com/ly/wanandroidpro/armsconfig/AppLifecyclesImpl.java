@@ -19,6 +19,7 @@ import android.app.Application;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.jess.arms.base.delegate.AppLifecycles;
 import com.jess.arms.utils.ArmsUtils;
 import com.ly.wanandroidpro.BuildConfig;
@@ -26,6 +27,8 @@ import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
 import butterknife.ButterKnife;
+import me.yokeyword.fragmentation.Fragmentation;
+import me.yokeyword.fragmentation.helper.ExceptionHandler;
 import timber.log.Timber;
 
 /**
@@ -46,7 +49,45 @@ public class AppLifecyclesImpl implements AppLifecycles {
 
     @Override
     public void onCreate(@NonNull Application application) {
+        initTimber();
+        initLeakCanary(application);
+        initFragmentation();
+        initARouter(application);
 
+    }
+
+    private void initARouter(Application application) {
+        if (BuildConfig.LOG_DEBUG) {
+            ARouter.openDebug();
+            ARouter.openLog();
+            ARouter.printStackTrace(); // 打印日志的时候打印线程堆栈
+        }
+        ARouter.init(application);
+    }
+
+    private void initFragmentation() {
+        Fragmentation.builder()
+                .stackViewMode(Fragmentation.BUBBLE)
+                .debug(BuildConfig.DEBUG)
+                .handleException(new ExceptionHandler() {
+                    @Override
+                    public void onException(@NonNull Exception e) {
+                        //上报错误
+                    }
+                })
+                .install();
+    }
+
+    private void initLeakCanary(Application application) {
+        if (BuildConfig.USE_CANARY){
+            LeakCanary.install(application);
+        }
+    }
+
+    private void initTimber() {
+        if (BuildConfig.LOG_DEBUG){
+            Timber.plant(new Timber.DebugTree());
+        }
     }
 
     @Override
